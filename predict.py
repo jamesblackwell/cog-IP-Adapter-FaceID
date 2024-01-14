@@ -11,9 +11,8 @@ from insightface.app import FaceAnalysis
 from ip_adapter.ip_adapter_faceid import IPAdapterFaceID
 from diffusers import StableDiffusionPipeline, DDIMScheduler, AutoencoderKL
 
-base_model_path = "SG161222/Realistic_Vision_V4.0_noVAE"
+base_model_path = "models/epicphotogasm.safetensors"
 base_cache = "model-cache"
-vae_model_path = "stabilityai/sd-vae-ft-mse"
 ip_cache = "./ip-cache"
 device = "cuda"
 
@@ -37,14 +36,15 @@ class Predictor(BasePredictor):
             set_alpha_to_one=False,
             steps_offset=1,
         )
-        vae = AutoencoderKL.from_pretrained(
-            vae_model_path
-        ).to(dtype=torch.float16)
+        # vae = AutoencoderKL.from_pretrained(
+        #     vae_model_path
+        # ).to(dtype=torch.float16)
         pipe = StableDiffusionPipeline.from_pretrained(
             base_model_path,
+            use_safetensors=True,
             torch_dtype=torch.float16,
             scheduler=noise_scheduler,
-            vae=vae,
+            # vae=vae,
             feature_extractor=None,
             safety_checker=None,
             cache_dir=base_cache,
